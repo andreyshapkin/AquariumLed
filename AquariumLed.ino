@@ -5,6 +5,7 @@
 #include <avr/wdt.h>
 #include "AquariumCommon.h"
 #include "AquariumRTC.h"
+#include "AquariumSaveBootDate.h"
 #include "AquariumColorControl.h"
 #include "AquariumProgramTable.h"
 #include "AquariumColorDriver.h"
@@ -14,8 +15,9 @@
 #include "AquariumViewSetDate.h"
 #include "AquariumViewProgramList.h"
 #include "AquariumViewTestLED.h"
-#include "AquariumViewAction.h"
+#include "AquariumViewProgramAuto.h"
 #include "AquariumViewCustomRGB.h"
+#include "AquariumViewUptime.h"
 #include "AquariumViewMain.h"
 
 
@@ -28,6 +30,8 @@ void setup() {
   display_init();
   //Serial.println(F("Initializing RTC"));
   rtc_init();
+  //Serial.println(F("Initializing EEPROM"));
+  save_boot_init();
   //Serial.println(F("Initializing program_table"));
   init_program_table();
   //Serial.println(F("Initializing color driver"));

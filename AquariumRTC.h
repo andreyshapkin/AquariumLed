@@ -5,28 +5,6 @@
 #include <DS3231.h>
 #include <Wire.h>
 
-
-class AquariumTime {
-  public:
-    byte year;
-    byte month;
-    byte date;
-    byte day;
-    byte hour;
-    byte minute;
-    byte second;
-    
-    void set(AquariumTime& time) {
-      year = time.year;
-      month = time.month;
-      date = time.date;
-      day = time.day;
-      hour = time.hour;
-      minute = time.minute;
-      second = time.second;
-    }
-};
-
 DS3231 rtc;
 
 AquariumTime startTime;

@@ -3,40 +3,6 @@
 #define AQUARIUM_COLOR_CONTROL
 
 
-class Color {
-public:
-  int red;
-  int green;
-  int blue;
-
-  Color() {
-    red = 0;
-    green = 0;
-    blue = 0;
-  }
-
-  Color(int r, int g, int b) {
-    red = r;
-    green = g;
-    blue = b;
-  }
-  
-  void set(int r, int g, int b) {
-    red = r;
-    green = g;
-    blue = b;
-  }
-  
-  void set(Color& color) {
-    set(color.red, color.green, color.blue);
-  }
-
-  Color& get(int r, int g, int b) {
-    set(r, g, b);
-    return *this;
-  }
-};
-
 #define TRANSITION_ITERATIONS_NUM 16
 
 class ColorTransition {
