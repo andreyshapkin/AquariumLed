@@ -18,6 +18,7 @@
 #include "AquariumViewProgramAuto.h"
 #include "AquariumViewCustomRGB.h"
 #include "AquariumViewUptime.h"
+#include "AquariumViewMonitorRGB.h"
 #include "AquariumViewMain.h"
 
 
@@ -57,7 +58,7 @@ void loop() {
   //sprintf(get_str(), "Time millis %u", time_millis);
   //Serial.println(get_str());
   
-  if (poll_slow_loop.time_ticked(time_millis, 1000)) {
+  if (poll_slow_loop.time_ticked(time_millis, 5000)) {
     //unsigned millis_last = millis();
     rtc_update_time();
     poll_program_update();

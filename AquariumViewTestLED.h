@@ -1,7 +1,9 @@
 class AquariumViewTestLED: public AquariumViewBase {
 private:
   byte active_selection;
-  AquariumTimerAlert timer_alert;
+  AquariumTimerMilliSecond timer_alert;
+  const char* color;
+
 public:
   AquariumViewTestLED() {
     sprintf(name, "Test LED");
@@ -9,7 +11,10 @@ public:
   
   void init() {
     active_selection = 0;
-    timer_alert.reset(2);
+    timer_alert.reset(millis());
+
+    force_rgb(255,0,0);
+    color = "RED";
   }
   
   void update_control(RotaryKnob& knob) {
@@ -23,36 +28,34 @@ public:
   }
 
   void step() {
-    if (timer_alert.is_expired()) {
+    if (timer_alert.time_ticked(millis(), 2000)) {
       active_selection++;
-      timer_alert.reset(2);
-    }    
+      set_update();
+      
+      if (active_selection == 0) {
+        force_rgb(255,0,0);
+        color = "RED";
+      } else if (active_selection == 1) {
+        force_rgb(0,255,0);
+        color = "GREEN";
+      } else if (active_selection == 2) {
+        force_rgb(0,0,255);
+        color = "BLUE";
+      } else if (active_selection == 3) {
+        force_rgb(255,255,255);
+        color = "WHITE";
+      } else if (active_selection == 4) {
+        force_rgb(0,0,0);
+        color = "OFF";
+      } else if (active_selection == 5) {
+        unforce_rgb();
+        color = "DONE";
+        complete_view();
+      }
+    }
   }
 
   void update_display(AquariumDisplay& display) {
-    const char* color;
-
-    if (active_selection == 0) {
-      force_rgb(255,0,0);
-      color = "RED";
-    } else if (active_selection == 1) {
-      force_rgb(0,255,0);
-      color = "GREEN";
-    } else if (active_selection == 2) {
-      force_rgb(0,0,255);
-      color = "BLUE";
-    } else if (active_selection == 3) {
-      force_rgb(255,255,255);
-      color = "WHITE";
-    } else if (active_selection == 4) {
-      force_rgb(0,0,0);
-      color = "OFF";
-    } else if (active_selection == 5) {
-      unforce_rgb();
-      color = "DONE";
-      complete_view();
-    }
-
     display.setFont(Callibri15);
     display.setCursor(30, 5);
     sprintf(get_buffer(),"%s     ", color);

@@ -13,6 +13,7 @@ class AquariumViewBase {
 public:
   char name[20];
   byte timeout;
+  byte header_offset;
 
   virtual void init() {};
   virtual void update_control(RotaryKnob& knob) {};
@@ -26,6 +27,7 @@ public:
     _needs_display_refresh = true;
     _needs_display_update = true;
     timeout = 120;
+    header_offset = 0;
   }
 
   void activate() {
@@ -71,7 +73,7 @@ public:
   // display header of the View
   virtual void display_header(AquariumDisplay& display) {
     display.setFont(Callibri15);
-    display.setCursor(0, 0);
+    display.setCursor(header_offset, 0);
     display.println(name);
   }
  

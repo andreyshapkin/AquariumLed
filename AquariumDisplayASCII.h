@@ -13,10 +13,10 @@ typedef SSD1306AsciiAvrI2c AquariumDisplay;
 
 void display_init() {
   //Serial.println(F("Starting setup"));
+  
   //display.begin(&Adafruit128x64, I2C_ADDRESS);
-
   display.begin(&SH1106_128x64, I2C_ADDRESS);
-  display.setI2cClock(60000);
+  display.setI2cClock(80000);
   display.clear();
 }
 

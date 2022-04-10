@@ -87,6 +87,9 @@ public:
   AquariumTimerMilliSecond() {
     last_tick_milli_second = 0;
   }
+  bool reset(unsigned current_millis_time) {
+    last_tick_milli_second = current_millis_time;
+  }
   
   bool time_ticked(unsigned current_millis_time, unsigned delta_milli_seconds) {
     

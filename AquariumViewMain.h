@@ -1,5 +1,5 @@
 
-#define MAX_VIEWS 8
+#define MAX_VIEWS 9
 
 char* get_view_name(byte index);
 
@@ -7,16 +7,17 @@ class AquariumViewMain: public AquariumViewBase {
 private:
   byte active_selection;
   byte active_view;
-  byte last_second;
+  byte last_minute;
 public:
   AquariumViewMain() {
-    sprintf(name, "    Vikusa Project");
+    sprintf(name, "Vikusa Project");
+    header_offset = 25;
   }
     
   void init() {
     active_selection = 0;
     active_view = 0;
-    last_second = 0xff;
+    last_minute = 0xff;
   }
   void complete(bool result) {
     if (active_selection) {
@@ -29,6 +30,7 @@ public:
     if (knob.increment) {
       active_selection = increment_mod(active_selection, knob.increment, MAX_VIEWS);
       set_refresh();
+      set_update();
     }
     if (knob.click_count) {
       active_view = active_selection;
@@ -40,8 +42,8 @@ public:
 
   void step() {
     AquariumTime& now = rtc_get_time();
-    if (last_second != now.second) {
-      last_second = now.second;
+    if (last_minute != now.minute) {
+      last_minute = now.minute;
       set_update();
     }
   }
@@ -68,34 +70,41 @@ public:
 
     char* buffer = get_buffer();
 
-    //display.setFont(lcdnums12x16);
+//    //display.setFont(lcdnums12x16);
+//    display.setFont(lcdnums14x24);
+//    display.setCursor(10, 2);
+//    sprintf(buffer, "%02d", now.hour);
+//    display.print(buffer);
+//    display.setCursor(50, 2);
+//    sprintf(buffer, "%02d", now.minute);
+//    display.print(buffer);
+//    display.setCursor(90, 2);
+//    sprintf(buffer, "%02d", now.second);
+//    display.print(buffer);
+//  
+////    display.setFont(Callibri15);
+//    display.setFont(Callibri14);
+//    display.setCursor(0, 5);
+//    sprintf(buffer, "P: %s             ", program.get_name());
+//    display.println(buffer);
+//  
+//    display.setFont(System5x7);
+//    display.setCursor(0, 7);
+//    sprintf(buffer, "Color: %02x %02x %02x  ", color.red, color.green, color.blue);
+//    display.println(buffer);    
+    
     display.setFont(lcdnums14x24);
-    display.setCursor(10, 2);
+    display.setCursor(25, 2);
     sprintf(buffer, "%02d", now.hour);
     display.print(buffer);
-    display.setCursor(50, 2);
+    display.setCursor(65, 2);
     sprintf(buffer, "%02d", now.minute);
     display.print(buffer);
-    display.setCursor(90, 2);
-    sprintf(buffer, "%02d", now.second);
-    display.print(buffer);
-    //display.setFont(X11fixed7x14);
-    //display.setFont(ZevvPeep8x16);
-    //sprintf(buffer, "%02d:%02d:%02d %02d/%02d/%02d  ", now.hour, now.minute, now.second, now.month, now.date, now.year);
-    //sprintf(buffer, "   %02d : %02d : %02d  ", now.hour, now.minute, now.second);
-    //display.println(buffer);
   
-//    display.setFont(Callibri15);
-//    display.setFont(System5x7);
-    display.setFont(Callibri14);
-    display.setCursor(0, 5);
+    display.setFont(Callibri15);
+    display.setCursor(0, 6);
     sprintf(buffer, "P: %s             ", program.get_name());
-    display.println(buffer);
-  
-    display.setFont(System5x7);
-    display.setCursor(0, 7);
-    sprintf(buffer, "Color: %02x %02x %02x  ", color.red, color.green, color.blue);
-    display.println(buffer);    
+    display.println(buffer);  
   }
 
   void display_menu_activity(AquariumDisplay& display, char* text) {
@@ -126,7 +135,8 @@ void init_views() {
   viewList[4] = get_view_program_auto_ptr();
   viewList[5] = get_view_test_led_ptr();
   viewList[6] = get_view_custom_rgb();  
-  viewList[7] = get_view_uptime_ptr();  
+  viewList[7] = get_view_monitor_rgb();  
+  viewList[8] = get_view_uptime_ptr();  
 
   viewList[0]->init_view(get_display());
 }
