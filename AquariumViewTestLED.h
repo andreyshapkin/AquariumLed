@@ -22,17 +22,14 @@ public:
     active_selection = 0;
   }
 
-  void update_display(AquariumDisplay& display) {
+  void step() {
     if (timer_alert.is_expired()) {
       active_selection++;
       timer_alert.reset(2);
-    }
+    }    
+  }
 
-    if (needs_refresh()) {
-      display.clear();
-      display_header(display);
-    }
-
+  void update_display(AquariumDisplay& display) {
     const char* color;
 
     if (active_selection == 0) {

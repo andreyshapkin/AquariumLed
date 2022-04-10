@@ -72,18 +72,18 @@ void loop() {
     //Serial.println(get_str());
   }
 
-  if (poll_display_update.time_ticked(time_millis, 250)) {
-    //unsigned millis_last = millis();
-    get_active_view()->update_display_view(get_display());
-    //sprintf(get_str(), "Display: %u", millis() - millis_last);
-    //Serial.println(get_str());
-  }
-
   RotaryKnob& knob = rotary_knob_update();
   if (knob.click_count || knob.increment) {
     //sprintf(str, "knob clicked %d %d", knob.click_count, knob.increment);
     //Serial.println(str);  
     get_active_view()->update_control_view(knob);
+  }
+
+  if (poll_display_update.time_ticked(time_millis, 250)) {
+    //unsigned millis_last = millis();
+    get_active_view()->update_display_view(get_display());
+    //sprintf(get_str(), "Display: %u", millis() - millis_last);
+    //Serial.println(get_str());
   }
 }
 

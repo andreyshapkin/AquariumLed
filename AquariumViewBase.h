@@ -6,7 +6,10 @@ AquariumTimerAlert _timer_alert;
 
 class AquariumViewBase {
   bool _active;
-  bool _needs_refresh;
+  // full screen refresh - clearing display and drawing header/static text
+  bool _needs_display_refresh;
+  // partial interactive refresh
+  bool _needs_display_update;
 public:
   char name[20];
   byte timeout;
@@ -14,12 +17,14 @@ public:
   virtual void init() {};
   virtual void update_control(RotaryKnob& knob) {};
   virtual void update_display(AquariumDisplay& display) {};
+  virtual void step() {};
   virtual void complete(bool result) {};
   virtual void display_static(AquariumDisplay& display) {}
 
   AquariumViewBase() {
     _active = false;
-    _needs_refresh = true;
+    _needs_display_refresh = true;
+    _needs_display_update = true;
     timeout = 120;
   }
 
@@ -33,24 +38,33 @@ public:
     return _active;
   }
   void set_refresh() {
-    _needs_refresh = true;
+    _needs_display_refresh = true;
   }
   bool needs_refresh() {
-    bool result = _needs_refresh;
-    _needs_refresh = false;
+    bool result = _needs_display_refresh;
+    _needs_display_refresh = false;
     return result;
   }
-  
+  void set_update() {
+    _needs_display_update = true;
+  }
+  bool needs_update() {
+    bool result = _needs_display_update;
+    _needs_display_update = false;
+    return result;
+  }
+ 
   void init_view(AquariumDisplay& display) {
     activate();
     set_refresh();
+    set_update();
     _timer_alert.reset(timeout);
     init();
   }
 
   void complete_view(bool result=false) {
     deactivate();
-    complete(false);
+    complete(result);
   }
 
 
@@ -65,16 +79,22 @@ public:
     if (_timer_alert.is_expired()) {
       complete_view();
     }
+    step();
     if (needs_refresh()) {
       display.clear();
       display_header(display);
       display_static(display);
     }    
-    update_display(display);
+    if (needs_update()) {
+      update_display(display);
+    }
   }
 
   void update_control_view(RotaryKnob& knob) {
     _timer_alert.reset(timeout);
+    if (knob.click_count || knob.increment) {
+      set_update();
+    }
     update_control(knob);
   }
 

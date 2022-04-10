@@ -7,6 +7,7 @@ class AquariumViewMain: public AquariumViewBase {
 private:
   byte active_selection;
   byte active_view;
+  byte last_second;
 public:
   AquariumViewMain() {
     sprintf(name, "    Vikusa Project");
@@ -15,6 +16,7 @@ public:
   void init() {
     active_selection = 0;
     active_view = 0;
+    last_second = 0xff;
   }
   void complete(bool result) {
     if (active_selection) {
@@ -34,6 +36,14 @@ public:
     }
     //sprintf(get_str(), "AquariumViewMain: knob %d %d", active_view, active_selection);
     //Serial.println(get_str());
+  }
+
+  void step() {
+    AquariumTime& now = rtc_get_time();
+    if (last_second != now.second) {
+      last_second = now.second;
+      set_update();
+    }
   }
 
   // returns if view need to be switched from main to something else
