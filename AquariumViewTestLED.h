@@ -3,6 +3,7 @@ private:
   byte active_selection;
   AquariumTimerMilliSecond timer_alert;
   const char* color;
+  bool first_call;
 
 public:
   AquariumViewTestLED() {
@@ -11,10 +12,7 @@ public:
   
   void init() {
     active_selection = 0;
-    timer_alert.reset(millis());
-
-    force_rgb(255,0,0);
-    color = "RED";
+    first_call = true;
   }
   
   void update_control(RotaryKnob& knob) {
@@ -28,7 +26,15 @@ public:
   }
 
   void step() {
-    if (timer_alert.time_ticked(millis(), 2000)) {
+    if (first_call) {
+      force_rgb(255,0,0);
+      color = "RED";
+      
+      timer_alert.reset(millis());
+      first_call = false;
+    }
+    
+    if (timer_alert.time_ticked(millis(), 3000)) {
       active_selection++;
       set_update();
       
