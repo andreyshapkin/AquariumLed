@@ -19,7 +19,6 @@ private:
   byte minute;
   byte second;
 
-  AquariumTimerAlert timer_alert;
 public:
   AquariumViewTimeSet() {
     sprintf(name, "Time Set");
@@ -30,7 +29,7 @@ public:
     second = 0;
   }
   
-  void init(AquariumDisplay& display) {
+  void init() {
     activate();
 
     AquariumTime& time_now = rtc_get_time();  
@@ -39,16 +38,9 @@ public:
     hour = time_now.hour;
     minute = time_now.minute;
     second = 0;
-
-    timer_alert.reset(120);
-
-    display.clear();
-    display_header(display);
   }
   
   void update_control(RotaryKnob& knob) {
-    timer_alert.reset(120);
-
     if (knob.click_count) {
       if (selection_update != 0xff) {
         selection_update = 0xff;
@@ -75,7 +67,7 @@ public:
     }
   }
 
-  void complete_view(bool changes_made) {
+  void complete(bool changes_made) {
     deactivate();
     active_selection = 0;    
     selection_update = 0xff;
@@ -85,10 +77,6 @@ public:
   }
 
   void update_display(AquariumDisplay& display) {
-    if (timer_alert.is_expired()) {
-      complete_view(false);
-    }
-
     char* buffer = get_buffer();
   
     display.setFont(lcdnums14x24);

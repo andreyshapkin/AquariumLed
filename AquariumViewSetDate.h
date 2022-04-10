@@ -17,8 +17,6 @@ private:
   byte month;
   byte date;
   byte year;
-
-  AquariumTimerAlert timer_alert;
 public:
   AquariumViewDateSet() {
     sprintf(name, "Date Set");
@@ -29,24 +27,15 @@ public:
     year = 0;
   }
   
-  void init(AquariumDisplay& display) {
-    activate();
-
+  void init() {
     AquariumTime& time_now = rtc_get_time();  
     active_selection = 0;
     month = time_now.month;
     date = time_now.date;
     year = time_now.year;
-
-    timer_alert.reset(120);
-
-    display.clear();
-    display_header(display);
   }
   
   void update_control(RotaryKnob& knob) {
-    timer_alert.reset(120);
-
     if (knob.click_count) {
       if (selection_update != 0xff) {
         selection_update = 0xff;
@@ -73,8 +62,7 @@ public:
     }
   }
 
-  void complete_view(bool changes_made) {
-    deactivate();
+  void complete(bool changes_made) {
     active_selection = 0;    
     selection_update = 0xff;
     if (changes_made) {
@@ -84,10 +72,6 @@ public:
   
  
   void update_display(AquariumDisplay& display) {
-    if (timer_alert.is_expired()) {
-      complete_view(false);
-    }
-
     char* buffer = get_buffer();
   
     display.setFont(X11fixed7x14);

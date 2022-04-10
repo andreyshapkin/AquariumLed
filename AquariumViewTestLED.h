@@ -7,11 +7,8 @@ public:
     sprintf(name, "Test LED");
   }
   
-  void init(AquariumDisplay& display) {
-    activate();
+  void init() {
     active_selection = 0;
-    display.clear();
-    display_header(display);
     timer_alert.reset(2);
   }
   
@@ -21,9 +18,8 @@ public:
     }
   }
 
-  void complete_view() {
+  void complete(bool changes_made) {
     active_selection = 0;
-    deactivate();    
   }
 
   void update_display(AquariumDisplay& display) {
@@ -31,7 +27,12 @@ public:
       active_selection++;
       timer_alert.reset(2);
     }
-    
+
+    if (needs_refresh()) {
+      display.clear();
+      display_header(display);
+    }
+
     const char* color;
 
     if (active_selection == 0) {

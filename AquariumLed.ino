@@ -26,10 +26,10 @@ void setup() {
 
   //Serial.println(F("Setup started"));
 
-  //Serial.println(F("Initializing display"));
-  display_init();
   //Serial.println(F("Initializing RTC"));
   rtc_init();
+  //Serial.println(F("Initializing display"));
+  display_init();
   //Serial.println(F("Initializing EEPROM"));
   save_boot_init();
   //Serial.println(F("Initializing program_table"));
@@ -54,27 +54,36 @@ void loop() {
   wdt_reset();
   
   unsigned time_millis = millis();
-  //sprintf(str, "Time millis %u", time_millis);
-  //Serial.println(str);
+  //sprintf(get_str(), "Time millis %u", time_millis);
+  //Serial.println(get_str());
   
   if (poll_slow_loop.time_ticked(time_millis, 1000)) {
+    //unsigned millis_last = millis();
     rtc_update_time();
     poll_program_update();
+    //sprintf(get_str(), "SlowLoop: %u", millis() - millis_last);
+    //Serial.println(get_str());
   }
 
   if (poll_color_control_loop.time_ticked(time_millis,500)) {
+    //unsigned millis_last = millis();
     poll_color_control();
+    //sprintf(get_str(), "Color: %u", millis() - millis_last);
+    //Serial.println(get_str());
   }
 
-  if (poll_display_update.time_ticked(time_millis, 200)) {
-    get_active_view()->update_display(get_display());
+  if (poll_display_update.time_ticked(time_millis, 250)) {
+    //unsigned millis_last = millis();
+    get_active_view()->update_display_view(get_display());
+    //sprintf(get_str(), "Display: %u", millis() - millis_last);
+    //Serial.println(get_str());
   }
 
   RotaryKnob& knob = rotary_knob_update();
   if (knob.click_count || knob.increment) {
     //sprintf(str, "knob clicked %d %d", knob.click_count, knob.increment);
     //Serial.println(str);  
-    get_active_view()->update_control(knob);
+    get_active_view()->update_control_view(knob);
   }
 }
 

@@ -4,29 +4,21 @@ private:
   byte active_selection;
   bool updating_color;
   byte color[3];
-  AquariumTimerAlert timer_alert;
 public:
   AquariumViewCustomRGB() {
     sprintf(name, "Custom RGB");
   }
   
-  void init(AquariumDisplay& display) {
-    activate();
+  void init() {
     active_selection = 0;
     updating_color = false;
     Color& current_color = get_color_control().color();
     color[0] = current_color.red;
     color[1] = current_color.green;
     color[2] = current_color.blue;
-    timer_alert.reset(120);
-
-    display.clear();
-    display_header(display);
   }
   
   void update_control(RotaryKnob& knob) {
-    timer_alert.reset(120);
-    
     if (knob.click_count) {
       // select/unselect color to update
       if (active_selection<3) {
@@ -45,8 +37,7 @@ public:
     }
   }
 
-  void complete_view() {
-    deactivate();
+  void complete(bool result) {
     unforce_rgb();
 
     active_selection = 0;
@@ -54,10 +45,6 @@ public:
   }
 
   void update_display(AquariumDisplay& display) {
-    if (timer_alert.is_expired()) {
-      active_selection = 0;
-      complete_view();
-    }
     char* buffer = get_buffer();
 
     display.setFont(X11fixed7x14);

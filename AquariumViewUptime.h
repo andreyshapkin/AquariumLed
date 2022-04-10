@@ -3,49 +3,37 @@
 class AquariumViewUptime: public AquariumViewBase {
 private:
   byte active_selection;
-  AquariumTimerAlert timer_alert;
 public:
   AquariumViewUptime() {
     active_selection = 0;
-    timer_alert.reset(20);
     sprintf(name,"Uptime");
   }
 
-  void init(AquariumDisplay& display) {
-    activate();
-
+  void init() {
     active_selection = 0;
-    timer_alert.reset(10);
-
-    display.clear();
-    display_header(display);
   }
   
-  void complete_view() {
+  void complete(bool changes_made) {
     deactivate();
     active_selection = 0;    
   }
 
   void update_control(RotaryKnob& knob) {
-    timer_alert.reset(10);
-
     if (knob.click_count) {
       complete_view();
     }
     if (knob.increment) {
       active_selection = increment_mod(active_selection, knob.increment, 2);
-      AquariumDisplay& display = get_display();
-      display.clear();
-      display_header(display);
+      set_refresh();
     }
   }
 
   void update_display(AquariumDisplay& display) {
-    if (timer_alert.is_expired()) {
-      complete_view();
-    }
+  }
+
+  void display_static(AquariumDisplay& display) {
     display.setFont(System5x7);
-    display.setCursor(70, 1);
+    display.setCursor(70, 0);
     display.println(" <--->");
 
     if (active_selection == 0) {
@@ -54,6 +42,7 @@ public:
       display_history(display);
     }
   }
+
 
   void display_current_view(AquariumDisplay& display) {
     AquariumTime& now = rtc_get_time();

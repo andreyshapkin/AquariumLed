@@ -7,30 +7,26 @@ class AquariumViewMain: public AquariumViewBase {
 private:
   byte active_selection;
   byte active_view;
-  AquariumTimerAlert timer_alert;
 public:
   AquariumViewMain() {
     sprintf(name, "    Vikusa Project");
   }
     
-  void init(AquariumDisplay& display) {
-    activate();
-    
+  void init() {
     active_selection = 0;
     active_view = 0;
-    timer_alert.reset(120);
-
-    display.clear();
-    display_header(display);
   }
-  
-  void update_control(RotaryKnob& knob) {
-    timer_alert.reset(120);
+  void complete(bool result) {
+    if (active_selection) {
+      set_refresh();
+    }
+    init();
+  }
 
+  void update_control(RotaryKnob& knob) {
     if (knob.increment) {
       active_selection = increment_mod(active_selection, knob.increment, MAX_VIEWS);
-      display.clear();
-      display_header(display);
+      set_refresh();
     }
     if (knob.click_count) {
       active_view = active_selection;
@@ -48,10 +44,6 @@ public:
   }
   
   void update_display(AquariumDisplay& display) {
-    if (timer_alert.is_expired() && active_selection) {
-      init(display);
-    }
-
     if (active_selection == 0) {
       display_main_view(display);      
     } else {
@@ -126,7 +118,7 @@ void init_views() {
   viewList[6] = get_view_custom_rgb();  
   viewList[7] = get_view_uptime_ptr();  
 
-  viewList[0]->init(get_display());
+  viewList[0]->init_view(get_display());
 }
 
 AquariumViewBase* get_active_view() {
@@ -154,7 +146,7 @@ AquariumViewBase* get_active_view() {
   if (active_view_index != active_view_last_index) {
     //sprintf(get_str(), "active view changed: %d => %d %s", active_view_last_index, active_view_index, active_view->name);
     //Serial.println(get_str());
-    active_view->init(get_display());
+    active_view->init_view(get_display());
     active_view_last_index = active_view_index;
   }
   return active_view;

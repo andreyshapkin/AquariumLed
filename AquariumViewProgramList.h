@@ -3,25 +3,18 @@ class AquariumViewProgramList: public AquariumViewBase {
 private:
   byte active_selection;
   bool selection_changed;
-  AquariumTimerAlert timer_alert;
 public:
   AquariumViewProgramList() {
     sprintf(name, "Program List");
   }
   
-  void init(AquariumDisplay& display) {
+  void init() {
     activate();
     active_selection = get_program_table().get_active_program_index();
     selection_changed = false;
-    timer_alert.reset(120);
-
-    display.clear();
-    display_header(display);
   }
   
   void update_control(RotaryKnob& knob) {
-    timer_alert.reset(120);
-    
     if (knob.click_count) {
       complete_view();
     }
@@ -31,7 +24,7 @@ public:
     }
   }
 
-  void complete_view() {
+  void complete(bool result) {
     deactivate();
     
     if (selection_changed) {
@@ -42,12 +35,20 @@ public:
   }
   
   void update_display(AquariumDisplay& display) {
-    if (timer_alert.is_expired()) {
-      active_selection = 0;
-      selection_changed = false;
-      complete_view();
-    }
-    
+    char* buffer = get_buffer();
+
+    display.setFont(System5x7);
+    for (byte i=0; i<PROGRAM_TABLE_NUMBER_ENTRIES; i++) {
+      display.setCursor(0, 2 + i);
+      if (i == active_selection) {
+        display.print("->");    
+      } else {
+        display.print("  ");            
+      }
+    }  
+  }
+
+  void display_static(AquariumDisplay& display) {
     char* buffer = get_buffer();
 
     display.setFont(System5x7);
@@ -57,10 +58,8 @@ public:
       sprintf(buffer, "   %s %02d:%02d    ", program.get_name(), program.get_time().hour, program.get_time().minute);
       display.println(buffer);    
     }  
-    display.setCursor(0, 2 + active_selection);
-    display.print("->");    
-
   }
+
 };
 
 AquariumViewProgramList __viewProgramList;

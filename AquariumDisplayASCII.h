@@ -16,7 +16,7 @@ void display_init() {
   //display.begin(&Adafruit128x64, I2C_ADDRESS);
 
   display.begin(&SH1106_128x64, I2C_ADDRESS);
-  display.setI2cClock(40000);
+  display.setI2cClock(100000);
   display.clear();
 }
 
