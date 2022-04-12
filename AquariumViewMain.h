@@ -1,5 +1,5 @@
 
-#define MAX_VIEWS 9
+#define MAX_VIEWS 10
 
 char* get_view_name(byte index);
 
@@ -131,12 +131,13 @@ void init_views() {
   viewList[0] = get_view_main_ptr();
   viewList[1] = get_view_time_set_ptr();
   viewList[2] = get_view_date_set_ptr();
-  viewList[3] = get_view_program_list_ptr();
-  viewList[4] = get_view_program_auto_ptr();
-  viewList[5] = get_view_test_led_ptr();
-  viewList[6] = get_view_custom_rgb();  
-  viewList[7] = get_view_monitor_rgb();  
-  viewList[8] = get_view_uptime_ptr();  
+  viewList[3] = get_view_program_set_ptr();
+  viewList[4] = get_view_program_list_ptr();
+  viewList[5] = get_view_program_auto_ptr();
+  viewList[6] = get_view_test_led_ptr();
+  viewList[7] = get_view_custom_rgb();  
+  viewList[8] = get_view_monitor_rgb();  
+  viewList[9] = get_view_uptime_ptr();  
 
   viewList[0]->init_view(get_display());
 }

@@ -7,10 +7,8 @@ char* get_str() {
   return __str;
 }
 
-char display_buffer[60];
-
 char* get_buffer() {
-  return display_buffer;
+  return __str;
 }
 
 
@@ -37,9 +35,9 @@ class AquariumTime {
 
 class Color {
 public:
-  int red;
-  int green;
-  int blue;
+  byte red;
+  byte green;
+  byte blue;
 
   Color() {
     red = 0;
@@ -47,13 +45,13 @@ public:
     blue = 0;
   }
 
-  Color(int r, int g, int b) {
+  Color(byte r, byte g, byte b) {
     red = r;
     green = g;
     blue = b;
   }
   
-  void set(int r, int g, int b) {
+  void set(byte r, byte g, byte b) {
     red = r;
     green = g;
     blue = b;
@@ -63,7 +61,7 @@ public:
     set(color.red, color.green, color.blue);
   }
 
-  Color& get(int r, int g, int b) {
+  Color& get(byte r, byte g, byte b) {
     set(r, g, b);
     return *this;
   }

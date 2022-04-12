@@ -20,7 +20,7 @@ private:
   int delta_blue;
 
   bool in_transition;
-  int transition_iteration;
+  byte transition_iteration;
 
   Color current_color;
 
@@ -126,8 +126,8 @@ class ColorProgram {
 private:
   char* name;
   Color color_list[COLOR_PROGRAM_MAX_COLORS];
-  int number_of_colors;
-  int current_color;
+  byte number_of_colors;
+  byte current_color;
 public:
   ColorProgram() {
     number_of_colors = 0;

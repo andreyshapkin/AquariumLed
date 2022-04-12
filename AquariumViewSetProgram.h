@@ -2,40 +2,43 @@
 #include "AquariumViewBase.h"
 
 
-class AquariumViewTimeSet: public AquariumViewBase {
+class AquariumViewProgramSet: public AquariumViewBase {
 private:
   enum SelectionType {
     HOUR,
     MINUTE,
-    SECOND,
     SET,
-    CANCEL,
+    NEXT,
     ENUM_SIZE
   };
 
+  byte program_selection;
   byte active_selection;
   byte selection_update;
   byte hour;
   byte minute;
-  byte second;
 
 public:
-  AquariumViewTimeSet() {
-    sprintf(name, "Time Set");
+  AquariumViewProgramSet() {
+    sprintf(name, "Program Set");
+    program_selection = 0;
     active_selection = 0;
     selection_update = 0xff;
     hour = 0;
     minute = 0;
-    second = 0;
   }
   
   void init() {
-    AquariumTime& time_now = rtc_get_time();  
-    active_selection = 0;
+    program_selection = 0;
+    init_tab();
+  }
+
+  void init_tab() {
+    active_selection = NEXT;
     selection_update = 0xff;
+    ProgramTime time_now = eeprom_read_program_time(program_selection);
     hour = time_now.hour;
-    minute = time_now.minute;
-    second = 0;
+    minute = time_now.minute;    
   }
   
   void update_control(RotaryKnob& knob) {
@@ -46,9 +49,15 @@ public:
         if (active_selection < SET) {
           selection_update = active_selection;
         } else if (active_selection == SET) {
-          complete_view(true);
+          eeprom_save_program_time(program_selection, hour, minute);
+          get_program_table().get_program(program_selection).set_time(hour, minute);
+          active_selection = NEXT;
         } else {
-          complete_view(false);
+          program_selection++;
+          init_tab();
+          if (program_selection>=PROGRAM_ENUM_SIZE) {
+            complete_view(false);
+          }
         }
       }
     }
@@ -57,8 +66,6 @@ public:
         hour = increment_mod(hour, knob.increment, 24);
       } else if (selection_update == MINUTE) {
         minute = increment_mod(minute, knob.increment, 60);
-      } else if (selection_update == SECOND) {
-        second = increment_mod(second, knob.increment, 60);
       } else {
         active_selection = increment_mod(active_selection, knob.increment, ENUM_SIZE);
       }
@@ -66,31 +73,26 @@ public:
   }
 
   void complete(bool changes_made) {
-    active_selection = 0;    
-    selection_update = 0xff;
-    if (changes_made) {
-      rtc_set_time(hour, minute, second);
-    }
   }
 
   void update_display(AquariumDisplay& display) {
     char* buffer = get_buffer();
+
+    ProgramEntry& program = get_program_table().get_program(program_selection);
   
-    display.setFont(lcdnums14x24);
+    display.setFont(X11fixed7x14);
+    display.setCursor(0, 2);
+    sprintf(buffer, "%s   ", program.get_name());
+    display.print(buffer);
 
     display.setInvertMode(active_selection == HOUR);
-    display.setCursor(10, 2);
+    display.setCursor(40, 4);
     sprintf(buffer, "%02d", hour);
     display.print(buffer);
 
     display.setInvertMode(active_selection == MINUTE);
-    display.setCursor(50, 2);
+    display.setCursor(70, 4);
     sprintf(buffer, "%02d", minute);
-    display.print(buffer);
-
-    display.setInvertMode(active_selection == SECOND);
-    display.setCursor(90, 2);
-    sprintf(buffer, "%02d", second);
     display.print(buffer);
 
     display.setFont(X11fixed7x14);
@@ -100,9 +102,9 @@ public:
     display.setCursor(10, 6);
     display.print("SET");
 
-    display.setInvertMode(active_selection == CANCEL);
+    display.setInvertMode(active_selection == NEXT);
     display.setCursor(40, 6);
-    display.print("CANCEL");
+    display.print("NEXT");
 
     display.setInvertMode(false);
     display.setCursor(90, 6);
@@ -114,8 +116,8 @@ public:
   }
 };
 
-AquariumViewTimeSet __viewTimeSet;
+AquariumViewProgramSet __viewProgramSet;
 
-AquariumViewTimeSet* get_view_time_set_ptr() {
-  return &__viewTimeSet;
+AquariumViewProgramSet* get_view_program_set_ptr() {
+  return &__viewProgramSet;
 }

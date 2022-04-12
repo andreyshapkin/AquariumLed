@@ -37,7 +37,7 @@ public:
 class ProgramEntry {
 private:
   bool valid;
-  char name[15];
+  char name[10];
   ProgramTime programTime;
   ColorProgram colorProgram;
 
@@ -72,6 +72,10 @@ public:
 
   ProgramTime& get_time() {
     return programTime;
+  }
+
+  void set_time(byte hour, byte minute) {
+    programTime.set(hour, minute);
   }
   
 };

@@ -11,8 +11,10 @@
 #include "AquariumColorDriver.h"
 #include "AquariumRotaryKnob.h"
 #include "AquariumDisplayASCII.h"
+#include "AquariumSetupProgramTable.h"
 #include "AquariumViewSetTime.h"
 #include "AquariumViewSetDate.h"
+#include "AquariumViewSetProgram.h"
 #include "AquariumViewProgramList.h"
 #include "AquariumViewTestLED.h"
 #include "AquariumViewProgramAuto.h"
@@ -116,53 +118,4 @@ void poll_color_control() {
   //Serial.println(get_str());
 
   write_rgb(current_color.red, current_color.green, current_color.blue);
-}
-
-
-void init_program_table() {
-  int index = 0;
-  Color color;
-  ColorProgram program_color;
-  ProgramTime program_time;
-
-  ProgramTable& program_table = get_program_table();
-  ColorControl& colorControl = get_color_control();
-
-  program_time.set(7,0);
-  program_color.color_list_reset();
-//  program_color.color_list_add(color.get(255,15,192));
-//  program_color.color_list_add(color.get(255,15,150));
-  program_color.color_list_add(color.get(127,8,50));
-  program_color.color_list_add(color.get(127,8,20));
-  program_table.set_program(index++, "Sunrise", program_time, program_color);
-
-  program_time.set(8,0);
-  program_color.color_list_reset();
-  program_color.color_list_add(color.get(128,128,128));
-  program_color.color_list_add(color.get(128,100,150));
-  program_color.color_list_add(color.get(128,150,100));
-  program_table.set_program(index++, "Daytime", program_time, program_color);
-
-  program_time.set(20,0);
-  program_color.color_list_reset();
-//  program_color.color_list_add(color.get(255,15,192));
-//  program_color.color_list_add(color.get(255,15,150));
-  program_color.color_list_add(color.get(127,8,50));
-  program_color.color_list_add(color.get(127,8,20));
-  program_table.set_program(index++, "Sunset", program_time, program_color);
-
-  program_time.set(21,0);
-  program_color.color_list_reset();
-//  program_color.color_list_add(color.get(100,100,255));
-//  program_color.color_list_add(color.get(100,200,255));
-  program_color.color_list_add(color.get(5,5,50));
-  program_color.color_list_add(color.get(5,25,50));
-  program_table.set_program(index++, "Night", program_time, program_color);
-
-  AquariumTime& now = rtc_get_time();
-  program_time.set(now.hour, now.minute);
-  program_table.activate_program_by_time(program_time);
-  
-  ProgramEntry& active_program = program_table.get_active_program();
-  colorControl.set_next_program(active_program.get_color_program());
 }

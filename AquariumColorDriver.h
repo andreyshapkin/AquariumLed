@@ -13,7 +13,7 @@ void color_driver_init() {
 
 bool color_driver_is_forced = false;
 
-void write_rgb(int red, int green, int blue) {
+void write_rgb(byte red, byte green, byte blue) {
   if (color_driver_is_forced) {
     return;
   }
@@ -23,7 +23,7 @@ void write_rgb(int red, int green, int blue) {
 }
 
 // used for LED testing
-void force_rgb(int red, int green, int blue) {
+void force_rgb(byte red, byte green, byte blue) {
   color_driver_is_forced = true;
   analogWrite(LED_RED, red);
   analogWrite(LED_GREEN, green);
