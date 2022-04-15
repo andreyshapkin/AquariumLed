@@ -29,6 +29,8 @@ void setup() {
 
   //Serial.println(F("Setup started"));
 
+  //Serial.println(F("Initializing watchdog"));
+  wdt_enable(WDTO_8S);
   //Serial.println(F("Initializing RTC"));
   rtc_init();
   //Serial.println(F("Initializing display"));
@@ -43,8 +45,6 @@ void setup() {
   rotary_knob_init();
   //Serial.println(F("Initializing view controls"));
   init_views();
-  //Serial.println(F("Initializing watchdog"));
-  wdt_enable(WDTO_8S);
   //Serial.println(F("All Good!"));
 }
 
