@@ -71,15 +71,19 @@ void init_program_table() {
 
   program_time.set(eeprom_read_program_time(PROGRAM_SUNRISE));
   program_color.color_list_reset();
+//  program_color.color_list_add(color.get(127,8,50));
+//  program_color.color_list_add(color.get(127,8,20));
   program_color.color_list_add(color.get(127,8,50));
   program_color.color_list_add(color.get(127,8,20));
   program_table.set_program(PROGRAM_SUNRISE, "Sunrise", program_time, program_color);
 
   program_time.set(eeprom_read_program_time(PROGRAM_DAYTIME));
   program_color.color_list_reset();
-  program_color.color_list_add(color.get(128,128,128));
-  program_color.color_list_add(color.get(128,100,150));
-  program_color.color_list_add(color.get(128,150,100));
+//  program_color.color_list_add(color.get(128,128,128));
+//  program_color.color_list_add(color.get(128,100,150));
+//  program_color.color_list_add(color.get(128,150,100));
+  program_color.color_list_add(color.get(100,80,120));
+  program_color.color_list_add(color.get(100,120,80));
   program_table.set_program(PROGRAM_DAYTIME, "Daytime", program_time, program_color);
 
   program_time.set(eeprom_read_program_time(PROGRAM_SUNSET));

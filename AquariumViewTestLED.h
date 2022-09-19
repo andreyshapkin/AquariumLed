@@ -35,7 +35,6 @@ public:
     }
     
     if (timer_alert.time_ticked(millis(), 3000)) {
-      active_selection++;
       set_update();
       
       if (active_selection == 0) {
@@ -58,6 +57,7 @@ public:
         color = "DONE";
         complete_view();
       }
+      active_selection++;
     }
   }
 
